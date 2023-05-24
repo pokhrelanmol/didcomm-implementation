@@ -7,7 +7,12 @@ import { generateKeypairs } from "./keyManagement";
 // Create a full DID
 export async function createFullDid(
   submitterAccount: Kilt.KiltKeyringPair
-): Promise<{ mnemonic: string; fullDid: Kilt.DidDocument }> {
+): Promise<{
+  mnemonic: string;
+  fullDid: Kilt.DidDocument;
+  keyAgreementPublicKey: Uint8Array;
+  keyAgreementPrivateKey: Uint8Array;
+}> {
   const api = Kilt.ConfigService.get("api");
   const mnemonic = mnemonicGenerate();
   const {
@@ -15,6 +20,8 @@ export async function createFullDid(
     keyAgreement,
     assertionMethod,
     capabilityDelegation,
+    keyAgreementPublicKey,
+    keyAgreementPrivateKey,
   } = generateKeypairs(mnemonic);
 
   // Get tx that will create the DID on chain and DID-URI that can be used to resolve the DID Document.
@@ -40,7 +47,34 @@ export async function createFullDid(
 
   if (!document) {
     throw new Error("Full DID was not successfully created.");
+  } else {
+    console.log(`Full DID ${didUri} successfully created.`);
+    console.log(`Key Agreement Public Key: ${keyAgreementPublicKey}`);
+    console.log(`Key Agreement Private Key: ${keyAgreementPrivateKey}`);
+    console.log(`DID Document: ${JSON.stringify(document, null, 2)}`);
   }
 
-  return { mnemonic, fullDid: document };
+  return {
+    mnemonic,
+    fullDid: document,
+    keyAgreementPublicKey,
+    keyAgreementPrivateKey,
+  };
+}
+
+export async function queryFullDid(
+  didUri: Kilt.DidUri
+): Promise<Kilt.DidDocument | null> {
+  const resolutionResult = await Kilt.Did.resolve(didUri);
+
+  if (
+    resolutionResult === null ||
+    resolutionResult.metadata.deactivated ||
+    resolutionResult.document === undefined
+  ) {
+    console.log(`DID ${didUri} has been deleted or does not exist.`);
+    return null;
+  } else {
+    return resolutionResult.document;
+  }
 }

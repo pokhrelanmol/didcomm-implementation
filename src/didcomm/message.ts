@@ -1,16 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-
-// Define the structure of a DIDComm message
-export interface DidcommMessage {
-  id: string;
-  type: string;
-  from?: string;
-  to?: string[];
-  created_time?: number;
-  expires_time?: number;
-  from_prior?: string;
-  body: any;
-}
+import { DidcommMessage } from "../models/didcommMessage";
 
 // Create a new DIDComm message
 export function createMessage(
@@ -19,18 +8,16 @@ export function createMessage(
   from?: string,
   to?: string[],
   created_time?: number,
-  expires_time?: number,
-  from_prior?: string
+  expires_time?: number
 ): DidcommMessage {
   return {
     id: uuidv4(),
     type: type,
+    body: body,
     from: from,
     to: to,
     created_time: created_time,
     expires_time: expires_time,
-    from_prior: from_prior,
-    body: body,
   };
 }
 

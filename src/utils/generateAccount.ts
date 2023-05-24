@@ -30,8 +30,9 @@ if (require.main === module) {
       console.log("save to mnemonic and address to .env to continue!\n\n");
       console.log(`USER_ACCOUNT_MNEMONIC="${mnemonic}"`);
       console.log(`USER_ACCOUNT_ADDRESS="${account.address}"\n\n`);
+      console.log(`USER_ACCOUNT_PUBLIC_KEY="${account.publicKey}"\n\n`);
     } catch (e) {
-      console.log("Error while setting up attester account");
+      console.log("Error while setting up user account");
       throw e;
     }
   })();

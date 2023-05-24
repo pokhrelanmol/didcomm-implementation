@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { DidcommMessage } from "./message";
+import { DidcommMessage } from "../models/didcommMessage";
 
 export function encryptMessage(
   message: DidcommMessage,
@@ -27,9 +27,9 @@ export function decryptMessage(
   sharedSecret: Buffer
 ): DidcommMessage {
   try {
-    const iv = encrypted.slice(0, 12);
-    const tag = encrypted.slice(12, 28);
-    const text = encrypted.slice(28);
+    const iv = encrypted.subarray(0, 12);
+    const tag = encrypted.subarray(12, 28);
+    const text = encrypted.subarray(28);
     const decipher = crypto.createDecipheriv("aes-256-gcm", sharedSecret, iv);
     decipher.setAuthTag(tag);
     const decrypted = decipher.update(text) + decipher.final("utf8");
