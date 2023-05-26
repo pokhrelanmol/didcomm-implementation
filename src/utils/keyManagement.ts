@@ -1,7 +1,5 @@
 import * as Kilt from "@kiltprotocol/sdk-js";
 import crypto from "crypto";
-import { eddsa } from "elliptic";
-import { Buffer } from "buffer";
 
 import {
   blake2AsU8a,
@@ -48,13 +46,4 @@ export function generateKeypairs(mnemonic = mnemonicGenerate()) {
     assertionMethod: assertionMethod,
     capabilityDelegation: capabilityDelegation,
   };
-}
-
-// Get Shared Secret from a DID and a key agreement key pair
-function deriveSharedSecret(privateKeyA: Buffer, publicKeyB: Buffer): Buffer {
-  const ec = new eddsa("ed25519");
-  const keyA = ec.keyFromSecret(privateKeyA);
-  const keyB = ec.keyFromPublic(publicKeyB);
-  const sharedSecret = keyA.derive(keyB.getPublic()); // ECDH key exchange
-  return Buffer.from(sharedSecret.toArray());
 }

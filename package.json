@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "generate-account": "ts-node src/utils/generateAccount.ts",
-    "generate-keypair": "ts-node src/scripts/generateDID.ts"
+    "generate-keypair": "ts-node src/scripts/generateDID.ts",
+    "secret": "ts-node src/scripts/sharedSecret.ts"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,7 @@
     "axios": "^1.4.0",
     "dotenv": "^16.0.3",
     "elliptic": "^6.5.4",
+    "tweetnacl": "^1.0.3",
     "uuid": "^9.0.0"
   }
 }
