@@ -39,8 +39,8 @@ export async function sendMessage(
 // Receive a DIDComm message
 export async function receiveMessage(
     encrypted: Buffer,
-    receiverPrivateKey: Buffer,
-    senderPublicKey: Buffer,
+    receiverPrivateKey: Uint8Array,
+    senderPublicKey: Uint8Array,
     nonce: Uint8Array
 ): Promise<DidcommMessage> {
     try {
@@ -50,6 +50,7 @@ export async function receiveMessage(
             senderPublicKey,
             nonce
         );
+
         const sharedSecret = Buffer.from(sharedSecretUint8Array);
         const message = decryptMessage(encrypted, sharedSecret);
 

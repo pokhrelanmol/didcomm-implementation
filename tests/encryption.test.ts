@@ -38,10 +38,9 @@ describe("DIDComm Encryption", () => {
     test("decryptMessage correctly decrypts a message", async () => {
         const { encrypted, nonce } = await sendMessage(
             testMessage,
-            account1_private_key,
-            account1_public_key
+            account2_public_key,
+            account1_private_key
         );
-        console.log("encryptedMessage", encrypted);
         const decryptedMessage = await receiveMessage(
             encrypted,
             account2_private_key,
