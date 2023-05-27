@@ -7,7 +7,8 @@
     "test": "jest",
     "generate-account": "ts-node src/utils/generateAccount.ts",
     "generate-keypair": "ts-node src/scripts/generateDID.ts",
-    "secret": "ts-node src/scripts/sharedSecret.ts"
+    "secret": "ts-node src/scripts/sharedSecret.ts",
+    "didDoc": "ts-node src/scripts/queryFullDid.ts"
   },
   "keywords": [],
   "author": "",

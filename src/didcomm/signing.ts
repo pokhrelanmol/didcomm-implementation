@@ -1,17 +1,27 @@
 import crypto from "crypto";
 import { DidcommMessage } from "../models/didcommMessage";
+import * as Kilt from "@kiltprotocol/sdk-js";
+import { queryFullDid } from "../utils/didResolver";
 
 // Sign a DIDComm message
-export function signMessage(
+export async function signMessage(
   message: DidcommMessage,
-  privateKey: Buffer
-): Buffer {
+  signCallback: Kilt.SignExtrinsicCallback,
+  didUri: Kilt.DidUri
+): Promise<Kilt.DidSignature> {
   try {
-    const sign = crypto.createSign("SHA256");
-    sign.update(JSON.stringify(message));
-    const signature = sign.sign(privateKey);
+    const signData: Kilt.SignRequestData = {
+      data: Buffer.from(JSON.stringify(message)),
+      keyRelationship: "authentication",
+      did: didUri,
+    };
+    const signResult = await signCallback(signData);
     console.log("Message signed successfully");
-    return signature;
+
+    return {
+      keyUri: `${didUri}#${signResult.keyType}`,
+      signature: Buffer.from(signResult.signature).toString("hex"),
+    };
   } catch (error) {
     console.error("Error signing message:", error);
     throw error;
@@ -19,19 +29,29 @@ export function signMessage(
 }
 
 // Verify the signature of a DIDComm message
-export function verifySignature(
+export async function verifyMessageSignature(
   message: DidcommMessage,
-  signature: Buffer,
-  publicKey: Buffer
-): boolean {
+  signature: Kilt.DidSignature
+): Promise<boolean> {
   try {
-    const verify = crypto.createVerify("SHA256");
-    verify.update(JSON.stringify(message));
-    const verified = verify.verify(publicKey, signature);
+    const signatureUint8Array = Buffer.from(signature.signature, "hex");
+    const keyUri: Kilt.DidResourceUri = signature.keyUri;
+    const stringifiedMessage = JSON.stringify(message);
+    const expectedMethod: Kilt.VerificationKeyRelationship = "authentication";
+
+    const verificationInput = {
+      message: stringifiedMessage,
+      signature: signatureUint8Array,
+      keyUri: keyUri,
+      expectedVerificationMethod: expectedMethod,
+    };
+
+    await Kilt.Did.verifyDidSignature(verificationInput);
+
     console.log("Signature verified successfully");
-    return verified;
+    return true;
   } catch (error) {
     console.error("Error verifying signature:", error);
-    throw error;
+    return false;
   }
 }

@@ -1,0 +1,27 @@
+Current Flow Thinking
+
+1. User Enters Mnemonic: Mnemoic will be used to generateKeyAgreement
+Object
+- PRIVATE_KEY
+- AUTHENTICATION_KEY.sign
+
+2. Input DID
+-Function Resolves DID
+-PUBLIC_KEY
+
+3.WEBRTC-CONNECTION
+
+4.Create Message
+-createMessage function this will create DidcommMessage
+
+5.Send Message
+- sendMessage inside index.ts
+
+6.Recieve Message
+
+    This is our authentication---- Uint8Array(32) [
+      108, 128, 173, 240,  91, 116, 145, 99,
+       55, 194, 190,   3, 168, 147,  63, 48,
+      104, 134, 190, 173, 143,  27, 213, 95,
+       65,  31, 191,  24, 176, 184, 240, 89
+    ]
