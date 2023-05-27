@@ -39,7 +39,10 @@ export async function generateKeypairs(mnemonic = mnemonicGenerate()) {
         ...account.derive("//did//delegation//0"),
         type: "sr25519",
     } as Kilt.KiltKeyringPair;
+    console.log("capabilityDelegation", capabilityDelegation.publicKey);
+    console.log("Account public key", account.publicKey);
     const keyAgreement = generateKeyAgreement(mnemonic);
+    console.log("This is the keyAgreement:", keyAgreement);
 
     return {
         authentication: authentication,

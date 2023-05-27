@@ -13,6 +13,7 @@ export async function sendMessage(
 ): Promise<{ encrypted: Buffer; nonce: Uint8Array }> {
     try {
         // Sign the message
+        
 
         // Generate a random nonce
         const nonce = nacl.randomBytes(nacl.box.nonceLength);

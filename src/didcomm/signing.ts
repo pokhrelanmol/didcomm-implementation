@@ -1,15 +1,15 @@
-import crypto from "crypto";
+import crypto, { SignPrivateKeyInput } from "crypto";
 import { DidcommMessage } from "../models/didcommMessage";
 import { KiltKeyringPair } from "@kiltprotocol/sdk-js";
 
 // Sign a DIDComm message
+
 export function signMessage(
     message: DidcommMessage,
-    capabilityDelegation: KiltKeyringPair
+    authentication: KiltKeyringPair
 ): Buffer {
     try {
-        const signature = capabilityDelegation.sign(JSON.stringify(message));
-
+        const signature = authentication.sign(JSON.stringify(message));
         console.log("Message signed successfully");
         return Buffer.from(signature);
     } catch (error) {
@@ -22,12 +22,17 @@ export function signMessage(
 export function verifySignature(
     message: DidcommMessage,
     signature: Buffer,
-    publicKey: Buffer
+    publicKey: Uint8Array,
+    authentication: KiltKeyringPair
 ): boolean {
+    console.log(authentication);
+
     try {
-        const _verify = crypto.createVerify("SHA256");
-        _verify.update(JSON.stringify(message));
-        const verified = _verify.verify(publicKey, signature);
+        const verified = authentication.verify(
+            JSON.stringify(message),
+            signature,
+            publicKey
+        );
         console.log("Signature verified successfully");
         return verified;
     } catch (error) {
