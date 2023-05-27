@@ -21,5 +21,6 @@ async function getFullDidFromChain(
   await Kilt.connect(process.env.WSS_ADDRESS as string);
 
   const document = await getFullDidFromChain(didUri);
-  console.log(`Full DID Document: ${JSON.stringify(document, null, 2)}`);
+  const key = await Kilt.Did.getKey(document, "#sr25519");
+  console.log(`Full DID Document: ${key}`);
 })();

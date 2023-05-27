@@ -17,9 +17,11 @@ export async function signMessage(
     };
     const signResult = await signCallback(signData);
     console.log("Message signed successfully");
+    const document = await queryFullDid(didUri);
+    const keyId = document?.authentication[0].id;
 
     return {
-      keyUri: `${didUri}#${signResult.keyType}`,
+      keyUri: `${didUri}${keyId!}`,
       signature: Buffer.from(signResult.signature).toString("hex"),
     };
   } catch (error) {
@@ -35,8 +37,11 @@ export async function verifyMessageSignature(
 ): Promise<boolean> {
   try {
     const signatureUint8Array = Buffer.from(signature.signature, "hex");
+
     const keyUri: Kilt.DidResourceUri = signature.keyUri;
-    const stringifiedMessage = JSON.stringify(message);
+
+    const stringifiedMessage = Buffer.from(JSON.stringify(message));
+
     const expectedMethod: Kilt.VerificationKeyRelationship = "authentication";
 
     const verificationInput = {

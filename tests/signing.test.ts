@@ -24,6 +24,7 @@ describe("DIDComm Signing", () => {
 
   test("signMessage signs a valid message", async () => {
     await waitReady();
+    await Kilt.connect(process.env.WSS_ADDRESS as string);
     const { authentication } = generateKeypairs(seed);
     const signature: Kilt.DidSignature = await signMessage(
       testMessage,
@@ -33,18 +34,16 @@ describe("DIDComm Signing", () => {
       }),
       ACCOUNT1_DID as Kilt.DidUri
     );
-    console.log("This is our keyUri----", signature.keyUri);
-    console.log("This is our signature----", signature.signature);
 
     expect(signature).toBeDefined();
+    Kilt.disconnect();
   });
 
-  test.only("verifyMessageSignature correctly verifies a valid signature", async () => {
+  test("verifyMessageSignature correctly verifies a valid signature", async () => {
     await waitReady();
     await Kilt.connect(process.env.WSS_ADDRESS as string);
-    const api = Kilt.ConfigService.get("api");
+
     const { authentication } = generateKeypairs(seed);
-    console.log("This is our authentication----", authentication.publicKey);
 
     const signature: Kilt.DidSignature = await signMessage(
       testMessage,
@@ -52,20 +51,11 @@ describe("DIDComm Signing", () => {
         signature: authentication.sign(data),
         keyType: authentication.type,
       }),
-      ACCOUNT2_DID as Kilt.DidUri
-    );
-    console.log("This is our signature----", signature.signature);
-    console.log("This is our keyUri----", signature.keyUri);
-
-    const { did, fragment: keyId } = Kilt.Did.parse(signature.keyUri);
-    console.log("This is our did----", did);
-    console.log("This is our keyId----", keyId);
-
-    const verified = await verifyMessageSignature(
-      testMessage,
-      signature,
       ACCOUNT1_DID as Kilt.DidUri
     );
+
+    const verified = await verifyMessageSignature(testMessage, signature);
+
     expect(verified).toBe(true);
     Kilt.disconnect();
   });
